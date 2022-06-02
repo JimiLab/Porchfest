@@ -10,6 +10,7 @@ from app.models import *
 
 @app.route('/')
 def index():
+    ##main route
     all_artists = Artist.query.order_by(Artist.name.asc()).all()
     artists_list = []
     for artist in all_artists:

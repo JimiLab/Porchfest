@@ -12,13 +12,15 @@ def get_slug_artist(slug):
     if info is not None:
         user = User.query.filter_by(access_token=info.get('access_token')).first()
     artist_data = Artist.query.filter_by(url_slug=slug).first_or_404()
+    artist_porch = ArtistToPorch.query.filter_by(artist_id=artist_data.id).first()
+    artist_location = Porch.query.filter_by(id=artist_porch.porch_id).first()
     if user:
         favoriteArtist = UserToArtist.query.filter(UserToArtist.artist_id == artist_data.id,
                                                    UserToArtist.user_id == user.id).first()
         if favoriteArtist is not None:
-            result = {"artist": artist_data.to_dict(), 'liked': favoriteArtist.favorite}
+            result = {"artist": artist_data.to_dict(), 'liked': favoriteArtist.favorite, 'location': artist_location}
             return jsonify(result)
-    result = {"artist": artist_data.to_dict()}
+    result = {"artist": artist_data.to_dict(), 'location': artist_location.address}
     return jsonify(result)
 
 
